@@ -40,8 +40,17 @@ public class MemoireActionsBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+//    private static final Log log = LogFactory.getLog(MemoireActionsBean.class);
+
+//    @In(create = true, required = false)
+//    protected transient CoreSession documentManager;
+
     @In(create = true)
     protected NavigationContext navigationContext;
+
+//    @In(create = true, required = false)
+//    protected transient FacesMessages facesMessages;
+
 
     @In(create = true, required = false)
     protected NuxeoPrincipal currentNuxeoPrincipal;
@@ -49,6 +58,8 @@ public class MemoireActionsBean implements Serializable {
     @In(create = true)
     protected DocumentsListsManager documentsListsManager;
 
+    // Sample code to show how to retrieve the list of selected documents in the
+    // content listing view
     protected List<DocumentModel> getCurrentlySelectedDocuments() {
 
         if (navigationContext.getCurrentDocument().isFolder()) {

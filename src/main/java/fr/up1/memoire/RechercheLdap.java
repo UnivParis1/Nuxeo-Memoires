@@ -33,6 +33,10 @@ public class RechercheLdap {
 			env.put( Context.SECURITY_CREDENTIALS    , factory.getServer("default").getBindPassword() );
 		}catch(NullPointerException e){
 			env.put(Context.PROVIDER_URL, "ldap://ldap-test.univ-paris1.fr");
+	//	    env.put(Context.PROVIDER_URL, "ldap://ldap.univ-paris1.fr");
+			//env.put(Context.SECURITY_AUTHENTICATION, "simple");
+			//env.put(Context.SECURITY_PRINCIPAL, "cn=xxx,ou=admin,dc=univ-paris1,dc=fr");
+			//env.put(Context.SECURITY_CREDENTIALS, "xxx");
 		}
 	}
 
@@ -68,6 +72,7 @@ public class RechercheLdap {
 		    }
 		    dirContext.close();
 		} catch (NamingException e) {
+		    //System.err.println("Erreur lors de l'acces au serveur LDAP" + e);
 		    e.printStackTrace();
 			alReturn.add("");
 		} catch (NullPointerException e){

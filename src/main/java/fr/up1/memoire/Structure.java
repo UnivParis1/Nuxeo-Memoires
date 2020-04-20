@@ -136,23 +136,26 @@ public class Structure extends UnrestrictedSessionRunner {
 		strRes += getOrCreate(memDocInfo);
 
 		if( session.exists(new PathRef("/memoires/templates")) ) {
-            session.removeDocument(new PathRef("/memoires/templates"));
-        }
+			session.removeDocument(new PathRef("/memoires/templates"));
+		}
 		if( session.exists(new PathRef("/memoires/workspaces")) ) {
-            session.removeDocument(new PathRef("/memoires/workspaces"));
-        }
+			session.removeDocument(new PathRef("/memoires/workspaces"));
+		}
 
 		strRes += createGroup(getGroupNameSI("mem_admin-nx")   , "Mémoires : Admin"         , "" , "" , "Administrator");
-	    strRes += createGroup(getGroupNameSI("mem_gestion-nx") , "Mémoires : Gestionnaires" , "" , "" , ""             );
-	    strRes += createGroup(getGroupNameSI("mem_prof-nx")    , "Mémoires : Professeurs"   , "" , "" , ""             );
-	    strRes += createGroup(getGroupNameSI("mem_etud-nx")    , "Mémoires : Étudiants"     , "" , "" , ""             );
-	    rightInit();
-	    strRes += rightAdd(getGroupNameSI("mem_admin-nx")   , "E" , true );
-	    strRes += rightAdd("members"    , "R" , true );
-	    rightAdd("nothing","",false);
-	    rightFinish();
+		strRes += createGroup(getGroupNameSI("mem_gestion-nx") , "Mémoires : Gestionnaires" , "" , "" , ""             );
+		strRes += createGroup(getGroupNameSI("mem_prof-nx")    , "Mémoires : Professeurs"   , "" , "" , ""             );
+		strRes += createGroup(getGroupNameSI("mem_etud-nx")    , "Mémoires : Étudiants"     , "" , "" , ""             );
+		rightInit();
+		strRes += rightAdd(getGroupNameSI("mem_admin-nx")   , "E" , true );
+		strRes += rightAdd(getGroupNameSI("mem_gestion-nx") , "R" , true );
+		strRes += rightAdd(getGroupNameSI("mem_prof-nx")    , "R" , true );
+		strRes += rightAdd(getGroupNameSI("mem_etud-nx")    , "R" , true );
+		strRes += rightAdd("members"    , "R" , true );
+		rightAdd("nothing","",false);
+		rightFinish();
 
-	    return strRes;
+		return strRes;
 	}
 	/**
 	 * Create level Année with groups of user and rights on.
@@ -165,13 +168,13 @@ public class Structure extends UnrestrictedSessionRunner {
 
 		strRes += getOrCreate(memDocInfo);
 
-	    rightInit();
-	    strRes += rightAdd(getGroupNameSI("mem_admin-nx")   , "E" , true );
-	    strRes += rightAdd(getGroupNameSI("mem_gestion-nx") , "R" , true );
-	    strRes += rightAdd(getGroupNameSI("mem_prof-nx")    , "R" , true );
-	    strRes += rightAdd(getGroupNameSI("mem_etud-nx")    , "R" , true );
-	    rightAdd("nothing","",false);
-	    rightFinish();
+		rightInit();
+		strRes += rightAdd(getGroupNameSI("mem_admin-nx")   , "E" , true );
+		strRes += rightAdd(getGroupNameSI("mem_gestion-nx") , "R" , true );
+		strRes += rightAdd(getGroupNameSI("mem_prof-nx")    , "R" , true );
+		strRes += rightAdd(getGroupNameSI("mem_etud-nx")    , "R" , true );
+		rightAdd("nothing","",false);
+		rightFinish();
 
 		return strRes;
 	}
@@ -184,7 +187,7 @@ public class Structure extends UnrestrictedSessionRunner {
 	private String makeUfr(MemDocInfo memDocInfo) throws NuxeoException, NuxeoException {
 		String strRes = "";
 		strRes += getOrCreate(memDocInfo);
-	    return strRes;
+		return strRes;
 	}
 	/**
 	 * Create level Diplôme with groups of user and rights on.
@@ -194,11 +197,28 @@ public class Structure extends UnrestrictedSessionRunner {
 	 */
 	private String makeDiplome(MemDocInfo memDocInfo) throws NuxeoException, NuxeoException {
 		String strRes = "";
-		strRes += getOrCreate(memDocInfo);
+		//try {
 
-	    rightInit();
-	    return strRes;
-    }
+		strRes += getOrCreate(memDocInfo);
+		strRes += createGroup("mem-d"+memDocInfo.getName()+"-prof"                         , "Mémoires : Professeurs de "+memDocInfo.getName()    , getGroupNameSI("mem_prof-nx") , "" , "" );
+		strRes += createGroup(getGroupNameSI("mem-d"+memDocInfo.getName()+"-etud-nx") , "Mémoires : Étudiants de "+memDocInfo.getName()      , ""                                 , "" , userSI.get_userName() );
+		rightInit();
+		strRes += rightAdd("mem-d"+memDocInfo.getName()+"-prof", "R"  ,true );
+		strRes += rightAdd(getGroupNameSI("mem-d"+memDocInfo.getName()+"-etud-nx"), "W" ,true );
+		strRes += rightAdd(getGroupNameSI("mem-d"+memDocInfo.getName()+"-gest-nx"), "W" ,true );
+		strRes += rightAdd(getGroupNameSI("mem-d"+memDocInfo.getName()+"-bibl-nx"), "W" ,true );
+		rightFinish();
+	//}
+		return strRes;
+
+	
+
+		//catch (Exception e) {
+
+		//  System.out.println(e);
+		// }
+
+	}
 
 	/**
 	 * Créer un document nuxeo
@@ -227,10 +247,10 @@ public class Structure extends UnrestrictedSessionRunner {
 						String pre;
 						String suf;
 						if(memDocInfo.getType().equals("mem-dc-diplome")){pre="d";suf="-nx";
-							tmpDoc.setPropertyValue( memDocInfo.getType()+":grp-etud" , getGroupNameSI("mem-"+pre+memDocInfo.getName()+"-etud"+suf) );
-							tmpDoc.setPropertyValue( memDocInfo.getType()+":grp-gest" , getGroupNameSI("mem-"+pre+memDocInfo.getName()+"-gest"+suf) );
-							tmpDoc.setPropertyValue( memDocInfo.getType()+":grp-bibl" , getGroupNameSI("mem-"+pre+memDocInfo.getName()+"-bibl"+suf) );
-							tmpDoc.setPropertyValue( memDocInfo.getType()+":grp-prof" , "mem-"+pre+memDocInfo.getName()+"-prof"     );
+						tmpDoc.setPropertyValue( memDocInfo.getType()+":grp-etud" , getGroupNameSI("mem-"+pre+memDocInfo.getName()+"-etud"+suf) );
+						tmpDoc.setPropertyValue( memDocInfo.getType()+":grp-gest" , getGroupNameSI("mem-"+pre+memDocInfo.getName()+"-gest"+suf) );
+						tmpDoc.setPropertyValue( memDocInfo.getType()+":grp-bibl" , getGroupNameSI("mem-"+pre+memDocInfo.getName()+"-bibl"+suf) );
+						tmpDoc.setPropertyValue( memDocInfo.getType()+":grp-prof" , "mem-"+pre+memDocInfo.getName()+"-prof"     );
 						}else{
 							pre="u";suf="";
 							tmpDoc.setPropertyValue( memDocInfo.getType()+":grp-etud" , "mem-"+pre+memDocInfo.getName()+"-etud"+suf );
@@ -239,7 +259,7 @@ public class Structure extends UnrestrictedSessionRunner {
 							tmpDoc.setPropertyValue( memDocInfo.getType()+":grp-prof" , "mem-"+pre+memDocInfo.getName()+"-prof"     );
 						}
 					}
-					
+
 					tmpDoc = session.createDocument(tmpDoc);
 					session.save();
 
@@ -273,7 +293,7 @@ public class Structure extends UnrestrictedSessionRunner {
 	 */
 
 	private String createGroup(String groupName, String groupTitle, String groupParent, String groupEnfant, String userId) throws NuxeoException { return "";}
-	
+
 	private String getGroupNameSI(String name){
 		String strRES = "";
 		if(name.substring(name.length()-3).equals("-nx")){
@@ -307,8 +327,9 @@ public class Structure extends UnrestrictedSessionRunner {
 		} else {
 			if(right.indexOf('E')>-1) {     acl.add( new ACE(userGroup, SecurityConstants.EVERYTHING , grant) ); sRight = (grant?"+":"-")+"everything" ; }else{
 				if(right.indexOf('R')>-1) { acl.add( new ACE(userGroup, SecurityConstants.READ       , grant) ); sRight+= (grant?"+":"-")+"read"      ; }
-				if(right.indexOf('W')>-1) { acl.add( new ACE(userGroup, SecurityConstants.READ_WRITE , grant) ); sRight+= (grant?"+":"-")+"write"     ; }
-				if(right.indexOf('D')>-1) { acl.add( new ACE(userGroup, SecurityConstants.REMOVE     , grant) ); sRight+= (grant?"+":"-")+"remove"    ; }}
+				if(right.indexOf('W')>-1) { acl.add( new ACE(userGroup, SecurityConstants.READ_WRITE , grant) ); sRight+= (grant?"+":"-")+"ReadWrite"     ; }
+				//if(right.indexOf('D')>-1) { acl.add( new ACE(userGroup, SecurityConstants.REMOVE     , grant) ); sRight+= (grant?"+":"-")+"remove"    ; }
+			}
 		}
 		acp.addACL(acl);
 		strRes += "		("+userGroup+",'"+sRight+"') to " + docModel.getName()+nl;

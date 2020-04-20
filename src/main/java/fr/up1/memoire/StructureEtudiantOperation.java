@@ -71,7 +71,7 @@ public class StructureEtudiantOperation {
         	StatusMessage.Severity severity = StatusMessage.Severity.valueOf(severityStr);
         	FacesMessages facesMessages = (FacesMessages) Contexts.getConversationContext().get(FacesMessages.class);
         	facesMessages.addFromResourceBundle(severity, mess, params);
-
+        	
 
             ok = true;
         } finally {
