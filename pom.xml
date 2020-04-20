@@ -5,9 +5,9 @@
 
   
   <groupId>org.nuxeo</groupId>
-  <artifactId>Test</artifactId>
+  <artifactId>up1-scd-memoire</artifactId>
     <version>1.0-SNAPSHOT</version>
-  <name>Test</name>
+  <name>up1-scd-memoire</name>
   <description>
     
   </description>
