@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<component name="fr.up1.memoire.MemoireActionsBean">
+
+  <extension target="org.nuxeo.ecm.platform.actions.ActionService"
+    point="actions">
+
+    <action id="CURRENT_SELECTION_TRASH">
+<!-- <category>CURRENT_SELECTION_LIST</category> -->
+<!-- <category>ORDERABLE_CURRENT_SELECTION_LIST</category> -->
+<!--       <category>SUBVIEW_UPPER_LIST</category> -->
+<!--       <filter-id>fr.up1.memoire.MemoireActionsBean.canRemove</filter-id> -->
+      <filter id="memoire.canRemove">
+        <rule grant="false">
+          <condition>#{memoireActions.lifeCycleNotDepot()}</condition>
+        </rule>
+      </filter>
+    </action>
+  </extension>
+
+<!--   <extension target="org.nuxeo.ecm.platform.actions.ActionService" -->
+<!--     point="filters"> -->
+
+<!--     <filter id="fr.up1.memoire.MemoireActionsBean.canRemove"> -->
+<!--       <rule grant="true"> -->
+<!--         <condition>#{memoireActions.canRemove()}</condition> -->
+<!--       </rule> -->
+<!--     </filter> -->
+
+<!--   </extension> -->
+
+</component>

@@ -1,0 +1,8 @@
+<component name="fr.up1.memoire.StructureEtudiantOperation">
+
+  <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+    point="operations" >
+      <operation class="fr.up1.memoire.StructureEtudiantOperation" />
+   </extension>
+    
+</component>

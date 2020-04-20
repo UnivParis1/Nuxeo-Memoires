@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-Vendor: Nuxeo
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Bundle-Version: 5.8
+Bundle-Name: scd
+Bundle-ManifestVersion: 2
+Nuxeo-Component: OSGI-INF/extensions/fr.up1.memoire.StructureEtudiantO
+ peration.xml,OSGI-INF/extensions/fr.up1.memoire.MemoireActionsBean.xm
+ l
+Bundle-SymbolicName: scd
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+
