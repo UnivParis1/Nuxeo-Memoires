@@ -1,5 +1,7 @@
 package fr.up1.memoire;
 
+import java.util.ArrayList;
+
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
@@ -11,9 +13,14 @@ import org.nuxeo.ecm.core.api.security.ACP;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.core.api.security.impl.ACLImpl;
 import org.nuxeo.ecm.core.api.security.impl.ACPImpl;
-
+import org.nuxeo.ecm.platform.usermanager.UserManager;
+import org.nuxeo.runtime.api.Framework;
 
 public class Structure extends UnrestrictedSessionRunner {
+	
+
+	private UserManager userManager;
+	
 	private String nl;
 
 	public UserSI userSI;
@@ -65,6 +72,8 @@ public class Structure extends UnrestrictedSessionRunner {
 	public Structure(CoreSession localSession) throws Exception {
 
 		super(localSession);
+		userManager = Framework.getService(UserManager.class);
+
 		nl="<br />";
 		setMessage("");
 		setPathDiplome("");
@@ -200,7 +209,7 @@ public class Structure extends UnrestrictedSessionRunner {
 		//try {
 
 		strRes += getOrCreate(memDocInfo);
-		strRes += createGroup("mem-d"+memDocInfo.getName()+"-prof"                         , "Mémoires : Professeurs de "+memDocInfo.getName()    , getGroupNameSI("mem_prof-nx") , "" , "" );
+		strRes += createGroup("mem-d"+memDocInfo.getName()+"-prof" , "Mémoires : Professeurs de "+memDocInfo.getName()    , getGroupNameSI("mem_prof-nx") , "" , "" );
 		strRes += createGroup(getGroupNameSI("mem-d"+memDocInfo.getName()+"-etud-nx") , "Mémoires : Étudiants de "+memDocInfo.getName()      , ""                                 , "" , userSI.get_userName() );
 		rightInit();
 		strRes += rightAdd("mem-d"+memDocInfo.getName()+"-prof", "R"  ,true );
@@ -291,9 +300,85 @@ public class Structure extends UnrestrictedSessionRunner {
 	 * @return
 	 * @throws NuxeoException
 	 */
+	@SuppressWarnings("unchecked")
+	private String createGroup(String groupName, String groupTitle, String groupParent, String groupEnfant, String userId) throws NuxeoException {
+		String strRes = "";
+		boolean blnCreate = false;
+		boolean blnUpdate = false;
+		String grpSchema = userManager.getGroupSchemaName();
+		String grpFieldId = userManager.getGroupIdField();
+		String grpFieldLabel = userManager.getGroupLabelField();
+		String grpFieldMembers = userManager.getGroupMembersField();
+		String grpFieldSubGrp = userManager.getGroupSubGroupsField();
+		String grpFieldParGrp = userManager.getGroupParentGroupsField();
 
-	private String createGroup(String groupName, String groupTitle, String groupParent, String groupEnfant, String userId) throws NuxeoException { return "";}
+		DocumentModel dmGrp = userManager.getGroupModel(groupName);
+		//this.userManager.getGroup(groupName).getMemberGroups();
+		//this.userManager.getGroup(groupName).getMemberUsers();
+		ArrayList<String> alUsers;
+		ArrayList<String> alSubGroup;
+		ArrayList<String> alParGroup;
 
+		if(dmGrp==null){
+			blnCreate = true;
+			dmGrp = userManager.getBareGroupModel();
+			dmGrp.setProperty(grpSchema , grpFieldId   , groupName);
+			dmGrp.setProperty(grpSchema , grpFieldLabel , groupTitle);
+			alUsers = new ArrayList<String>();
+			alSubGroup = new ArrayList<String>();
+			alParGroup = new ArrayList<String>();
+		}else{
+			alUsers    = (ArrayList<String>) dmGrp.getProperty(grpSchema, grpFieldMembers);
+			alSubGroup = (ArrayList<String>) dmGrp.getProperty(grpSchema, grpFieldSubGrp);
+			alParGroup = (ArrayList<String>) dmGrp.getProperty(grpSchema, grpFieldParGrp);
+		}
+
+		if(!userId.isEmpty()){
+			blnUpdate =true;
+			if(!alUsers.contains(userId)) {
+                alUsers.add(userId);
+            }
+			dmGrp.setProperty(grpSchema, grpFieldMembers, alUsers);
+		}
+		String subGR = getGroupNameSI(groupName);
+		if(!subGR.isEmpty() || !groupEnfant.isEmpty()){
+			blnUpdate = true;
+			if(!subGR.isEmpty()) {
+                if(!alSubGroup.contains(subGR)) {
+                    alSubGroup.add(subGR);
+                }
+            }
+			if(!groupEnfant.isEmpty()) {
+                if(!alSubGroup.contains(groupEnfant)) {
+                    alSubGroup.add(groupEnfant);
+                }
+            }
+
+			dmGrp.setProperty(grpSchema, grpFieldSubGrp, alSubGroup);
+			if(!subGR.isEmpty()){
+				strRes += "		+ Groupe : " + groupName + " créé, sous groupe à créer dans grouper "+subGR;
+				lstGrpSI+= subGR+"\n";
+			} else {
+				strRes += "		+ Groupe : " + groupName + " créé";
+			}
+		}
+		if(groupParent!="") {
+			if(!alParGroup.contains(groupParent)) {
+                alParGroup.add(groupParent);
+            }
+			dmGrp.setProperty(grpSchema, grpFieldParGrp, alParGroup);
+			strRes += "	:	"+groupName+" ∈ "+groupParent;
+		}/**/
+		if(blnCreate){
+			userManager.createGroup(dmGrp);
+		}else if(blnUpdate){
+			userManager.updateGroup(dmGrp);
+		}
+
+		return strRes + nl;
+	}
+		
+	
 	private String getGroupNameSI(String name){
 		String strRES = "";
 		if(name.substring(name.length()-3).equals("-nx")){
