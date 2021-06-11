@@ -372,7 +372,7 @@ public class Structure extends UnrestrictedSessionRunner {
 		if(blnCreate){
 			userManager.createGroup(dmGrp);
 		}else if(blnUpdate){
-			userManager.updateGroup(dmGrp);
+			//userManager.updateGroup(dmGrp);
 		}
 
 		return strRes + nl;

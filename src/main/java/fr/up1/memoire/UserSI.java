@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+
 
 import java.util.HashMap;
 
@@ -28,7 +30,8 @@ public class UserSI {
 
 	private boolean userLdap;
 
-	static final Logger logger = Logger.getLogger(UserSI.class);
+	//static final Logger logger = Logger.getLogger(UserSI.class);
+	
 
 	public UserSI(String username, Integer anneeCourante, String codeAnneeDiplome){
 
@@ -116,15 +119,15 @@ public class UserSI {
 	public void get_userDplInfo() {
 		if(userLdap){
 
-			logger.error("get_userDpl_Id():" + get_userDpl_Id() + "userIns.toString():" + userIns.toString());
+		//	logger.error("get_userDpl_Id():" + get_userDpl_Id() + "userIns.toString():" + userIns.toString());
 
 			HashMap<String, String> infos = rLdap.getAttr("ou="+get_userDpl_Id()+",ou="+(userIns.toString())+",ou=diploma,o=Paris1,dc=univ-paris1,dc=fr",  new String[] {"description"}) ;
 
-			logger.error("/" + infos.toString() + "anneeCourante:" + (String)infos.get(anneeCourante) + "codeAnneeDiplome:" + (String)infos.get(codeAnneeDiplome) + "userName:" + (String)infos.get(userName));
+	   //	logger.error("/" + infos.toString() + "anneeCourante:" + (String)infos.get(anneeCourante) + "codeAnneeDiplome:" + (String)infos.get(codeAnneeDiplome) + "userName:" + (String)infos.get(userName));
 
 			String strRES="";
 			Pattern pM2P = Pattern.compile( ".+ - [mM]aster +2 +[pP]ro +(.+)" );
-			logger.error("description ->:" + (String)infos.get("description"));
+		//	logger.error("description ->:" + (String)infos.get("description"));
 
 			Matcher mM2P;
 			mM2P = pM2P.matcher( infos.get("description") );
